@@ -99,7 +99,13 @@ def draw(pos,num):
         pygame.draw.circle(screen,(0,0,0),pos,16)
     else:
         pygame.draw.circle(screen,(255,255,255),pos,16)
-
+def printf(s):
+    font=pygame.font.Font('arial.ttf',32)
+    text=font.render(s, True, (0,0,0))
+    k=text.get_rect()
+    k.center=(335,100)
+    screen.blit(text,k)
+    pygame.display.update()
 pygame.init()   
 screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 pygame.display.set_caption("five")
@@ -109,6 +115,9 @@ nowplayer=1
 Board=board()
 Board.init()
 begin=0
+ready="Press C to begin"
+win=['','Black Win and','White Win and']
+printf(ready)
 while True:
     pygame.display.update()
     if begin==0:
@@ -137,6 +146,6 @@ while True:
                 draw(getpos(nowid[0],nowid[1]),nowplayer)
                 Board.board[nowid[0]][nowid[1]]=nowplayer;
                 if (Board.checkwin(nowplayer)==1):
-                    print("gameover")
+                    printf(win[nowplayer]+' '+ready)
                     begin=0
                 nowplayer=3-nowplayer
