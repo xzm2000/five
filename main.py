@@ -116,7 +116,8 @@ class ai:
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]
-
+    def init(self,board):
+        self.Board=board
     def hasne(self, x, y):
         if x-3 > 0:
             i = x-3
@@ -180,20 +181,20 @@ class ai:
             i += 1
         scoretmp += self.scoretable( number, empty1)
         return scoretmp
-    def evaluate(self, Board, color):
+    def evaluate(self, color):
         scorecomputer = 0
         scorehumber = 0
         for i in range(15):  # 1
             ll = []
             for j in range(15):
-                ll.append(Board.board[i][j])
+                ll.append(self.Board.board[i][j])
             scorecomputer += self.countscore(ll, color)
             scorehumber += self.countscore(ll, 3-color)
             ll.clear()
         for j in range(15):  # 2
             ll = []
             for i in range(15):
-                ll.append(Board.board[i][j])
+                ll.append(self.Board.board[i][j])
             scorecomputer += self.countscore(ll, color)
             scorehumber += self.countscore(ll, 3-color)
             ll.clear()
@@ -202,7 +203,7 @@ class ai:
             x = i
             y = 0
             while y < 15 and x < 15:
-                ll.append(Board.board[y][x])
+                ll.append(self.Board.board[y][x])
                 y += 1
                 x += 1
             scorecomputer += self.countscore(ll, color)
@@ -213,7 +214,7 @@ class ai:
             x = 0
             y = j
             while y < 15 and x < 15:
-                ll.append(Board.board[y][x])
+                ll.append(self.Board.board[y][x])
                 x += 1
                 y += 1
             scorecomputer += self.countscore(ll, color)
@@ -224,7 +225,7 @@ class ai:
             x = 0
             y = i
             while y >= 0 and x < 15:
-                ll.append(Board.board[y][x])
+                ll.append(self.Board.board[y][x])
                 x += 1
                 y -= 1
             scorecomputer += self.countscore(ll, color)
@@ -235,7 +236,7 @@ class ai:
             x = 14
             y = j
             while x >= 1 and y < 15:
-                ll.append(Board.board[x][y])
+                ll.append(self.Board.board[x][y])
                 x -= 1
                 y += 1
             scorecomputer += self.countscore(ll, color)
@@ -243,33 +244,33 @@ class ai:
             ll.clear()
         for i in range(15):  # 7
             for j in range(15):
-                if Board.board[i][j] == color:
+                if self.Board.board[i][j] == color:
                     scorecomputer += PosValue[i][j]
-                elif Board.board[i][j] == 3-color:
+                elif self.Board.board[i][j] == 3-color:
                     scorehumber += PosValue[i][j]
         return scorecomputer - scorehumber
-    def alphabeta(self, Board, depth, alpha, beta, player):
+    def alphabeta(self, depth, alpha, beta, player):
         if depth == 0:
-            return self.evaluate(Board, player)
+            return self.evaluate(player)
         for i in range(15):
             for j in range(15):
-                if Board.board[i][j] == 0 and self.hasne(i, j):
+                if self.Board.board[i][j] == 0 and self.hasne(i, j):
                     node = []
                     node.append(i)
                     node.append(j)
-                    Board.board[node[0]][node[1]]=player
-                    val = -self.alphabeta(Board, depth - 1, -beta, -alpha, 3 - player)
-                    Board.board[node[0]][node[1]]=0
+                    self.Board.board[node[0]][node[1]]=player
+                    val = -self.alphabeta(depth - 1, -beta, -alpha, 3 - player)
+                    self.Board.board[node[0]][node[1]]=0
                     if val >= beta:
                         return beta
                     if val > alpha:
                         if depth == 2:
-                            Board.x = i
-                            Board.y = j
+                            self.Board.x = i
+                            self.Board.y = j
                         alpha = val
         return alpha
-    def serchGoodmove(self,Board,player):
-        a=self.alphabeta(Board, 2,-inf,inf,player)
+    def serchGoodmove(self,player):
+        a=self.alphabeta(2,-inf,inf,player)
             
 def getpos(x,y):
     return (x*QZ_WH+QZ_ST,y*QZ_WH+QZ_ST)
@@ -278,6 +279,7 @@ def draw(pos,num):
         pygame.draw.circle(screen,(0,0,0),pos,16)
     else:
         pygame.draw.circle(screen,(255,255,255),pos,16)
+    pygame.display.update()
 def printf(s):
     font=pygame.font.Font('arial.ttf',32)
     text=font.render(s, True, (0,0,0))
@@ -339,7 +341,8 @@ while True:
                     break
                 nowplayer=3-nowplayer
                 if (mode!=0):
-                    AI.serchGoodmove(Board,nowplayer)
+                    AI.init(Board)
+                    AI.serchGoodmove(nowplayer)
                     draw(getpos(Board.x,Board.y),nowplayer)
                     Board.board[Board.x][Board.y]=nowplayer
                     if (Board.checkwin(nowplayer)==1):
