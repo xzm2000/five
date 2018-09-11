@@ -96,26 +96,25 @@ class board:
 
 class ai:
     global inf
-    inf=1000000000
+    inf=1000000
     global PosValue
     PosValue =\
         [
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-            [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-            [0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
-            [0, 0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
-            [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
-            [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+            [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 5, 6, 6, 6, 5, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 3, 2, 1, 0],
+            [0, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 1, 0],
+            [0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]
 
     def hasne(self, x, y):
@@ -123,11 +122,11 @@ class ai:
             i = x-3
         else:
             i = 0
-        if y-3 > 0:
-            j = y-3
-        else:
-            j = 0
         while i <= x+3 and i < 15:
+            if y-3 > 0:
+                j = y-3
+            else:
+                j = 0    
             while j <= y+3 and j < 15:
                 if Board.board[i][j] != 0:
                     return True
@@ -145,7 +144,7 @@ class ai:
         elif number == 3:
             if empty1 == 2:
                 return 1000
-            elif empty1 == 2:
+            elif empty1 == 1:
                 return 100
         elif number == 2:
             if empty1 == 2:
@@ -164,7 +163,7 @@ class ai:
             empty1 += 1
         elif lis[0] == turn:
             number += 1
-        for i in range(length):
+        for i in range(1,length):
             if lis[i] == turn:
                 number += 1
             elif lis[i] == 0:
@@ -176,7 +175,7 @@ class ai:
                     number = 0
             else:
                 scoretmp += self.scoretable( number, empty1+1)
-                empty1 = 1
+                empty1 = 0
                 number = 0
             i += 1
         scoretmp += self.scoretable( number, empty1)
@@ -236,7 +235,7 @@ class ai:
             x = 14
             y = j
             while x >= 1 and y < 15:
-                ll.append(Board.board[y][x])
+                ll.append(Board.board[x][y])
                 x -= 1
                 y += 1
             scorecomputer += self.countscore(ll, color)
@@ -296,7 +295,7 @@ Board=board()
 AI=ai()
 Board.init()
 begin=0
-ready="Press C to begin with players and B to be black to VS AI"
+ready="Press C to begin"
 win=['','Black Win and','White Win and']
 printf(ready)
 while True:
@@ -346,4 +345,5 @@ while True:
                     if (Board.checkwin(nowplayer)==1):
                         printf(win[nowplayer]+' '+ready)
                         begin=0
+                        break
                     nowplayer=3-nowplayer
