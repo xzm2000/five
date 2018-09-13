@@ -280,26 +280,40 @@ def draw(pos,num):
     else:
         pygame.draw.circle(screen,(255,255,255),pos,16)
     pygame.display.update()
-def printf(s):
-    font=pygame.font.Font('arial.ttf',32)
-    text=font.render(s, True, (0,0,0))
+def printf(ttf,s,size,x,y,color=(0,0,0)):
+    font=pygame.font.Font(ttf,size)
+    text=font.render(s, True, color)
     k=text.get_rect()
-    k.center=(335,100)
+    k.center=(x,y)
     screen.blit(text,k)
     pygame.display.update()
 pygame.init()   
 screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 pygame.display.set_caption("five")
-background=pygame.image.load("board.jpg")
+background=pygame.image.load("back.png")
+screen.blit(background,(0,0))
+printf('Shelldon.ttf', 'Five in row', 128, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4, (0,0,0))
+printf('Shelldon.ttf', 'Press any key to start', 64, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 2,(0,0,255))
+while True:
+    flag=1
+    for event in pygame.event.get():
+        if event.type==pygame.KEYDOWN:
+            flag=0
+            break
+    if flag==0:
+        break
 screen.blit(background,(0,0))
 nowplayer=1
 Board=board()
 AI=ai()
 Board.init()
 begin=0
-ready="Press C to begin"
-win=['','Black Win and','White Win and']
-printf(ready)
+background=pygame.image.load("board.jpg")
+screen.blit(background,(0,0))
+ready="Press C/B/W to begin"
+win=['Draw','Black Win and','White Win and']
+printf('arial.ttf',ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,(0,0,0))
+color=[(0,0,0),(0,0,0),(255,255,255)]
 while True:
     pygame.display.update()
     if begin==0:
@@ -314,6 +328,7 @@ while True:
                 screen.fill((255,255,255))
                 screen.blit(background,(0,0))
                 mode=0
+                num=0
                 break
             if event.type == pygame.KEYDOWN and event.key==pygame.K_b:
                 begin=1
@@ -322,6 +337,21 @@ while True:
                 screen.fill((255,255,255))
                 screen.blit(background,(0,0))
                 mode=1
+                num=0
+                break
+            if event.type == pygame.KEYDOWN and event.key==pygame.K_w:
+                begin=1
+                nowplayer=2
+                Board.clear()
+                screen.fill((255,255,255))
+                screen.blit(background,(0,0))
+                mode=1
+                Board.board[7][7]=1
+                Board.x=7
+                Board.y=7
+                draw(getpos(7,7),1)
+                printf("arial.ttf","X",16,getpos(7,7)[0],getpos(7,7)[1],(255,0,0))
+                num=1
                 break
     else:
         for event in pygame.event.get():
@@ -331,12 +361,23 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos=event.pos
                 nowid=(int(round((pos[0]-QZ_ST)/QZ_WH)),int(round((pos[1]-QZ_ST)/QZ_WH)))
-                if Board.board[nowid[0]][nowid[1]]!=0:
+                if nowid[0]>14 or nowid[1]>14 or Board.board[nowid[0]][nowid[1]]!=0:
                     continue
+                if num>=1:
+                    printf("arial.ttf","X",16,getpos(Board.x,Board.y)[0],getpos(Board.x,Board.y)[1],color[3-nowplayer])
+                    printf("arial.ttf",str(num),16,getpos(Board.x,Board.y)[0],getpos(Board.x,Board.y)[1],color[nowplayer])
+                Board.x=nowid[0]
+                Board.y=nowid[1]
+                num=num+1
                 draw(getpos(nowid[0],nowid[1]),nowplayer)
+                printf("arial.ttf","X",16,getpos(nowid[0],nowid[1])[0],getpos(nowid[0],nowid[1])[1],(255,0,0))
                 Board.board[nowid[0]][nowid[1]]=nowplayer;
                 if (Board.checkwin(nowplayer)==1):
-                    printf(win[nowplayer]+' '+ready)
+                    printf('arial.ttf',win[nowplayer]+' '+ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,color[nowplayer])
+                    begin=0
+                    break
+                if (num==255):
+                    printf('arial.ttf',win[0]+' '+ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,(0,0,0))
                     begin=0
                     break
                 nowplayer=3-nowplayer
@@ -345,8 +386,16 @@ while True:
                     AI.serchGoodmove(nowplayer)
                     draw(getpos(Board.x,Board.y),nowplayer)
                     Board.board[Board.x][Board.y]=nowplayer
+                    printf("arial.ttf","X",16,getpos(nowid[0],nowid[1])[0],getpos(nowid[0],nowid[1])[1],color[3-nowplayer])
+                    printf("arial.ttf",str(num),16,getpos(nowid[0],nowid[1])[0],getpos(nowid[0],nowid[1])[1],color[nowplayer])
+                    printf("arial.ttf","X",16,getpos(Board.x,Board.y)[0],getpos(Board.x,Board.y)[1],(255,0,0))
+                    num=num+1
                     if (Board.checkwin(nowplayer)==1):
-                        printf(win[nowplayer]+' '+ready)
+                        printf('arial.ttf',win[nowplayer]+' '+ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,color[nowplayer])
+                        begin=0
+                        break
+                    if (num==255):
+                        printf('arial.ttf',win[0]+' '+ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,(0,0,0))
                         begin=0
                         break
                     nowplayer=3-nowplayer
