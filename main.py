@@ -292,8 +292,12 @@ screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 pygame.display.set_caption("five")
 background=pygame.image.load("back.png")
 screen.blit(background,(0,0))
-printf('Shelldon.ttf', 'Five in row', 128, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4, (0,0,0))
-printf('Shelldon.ttf', 'Press any key to start', 64, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 2,(0,0,255))
+printf('Shelldon.ttf', 'Five in row', 200, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4, (0,0,0))
+printf('Shelldon.ttf', 'Press any key to start', 64, SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 2,(178,34,34))
+printf('Shelldon.ttf', 'C  People vs People', 32, SCREEN_WIDTH // 2, 200 + SCREEN_HEIGHT // 3,(178,34,34))
+printf('Shelldon.ttf', 'B  People(Black) vs People', 32, SCREEN_WIDTH // 2, 250 + SCREEN_HEIGHT // 3,(178,34,34))
+printf('Shelldon.ttf', 'W  People(White) vs People', 32, SCREEN_WIDTH // 2, 300 + SCREEN_HEIGHT // 3,(178,34,34))
+printf('Shelldon.ttf', 'Q  Restart', 64, SCREEN_WIDTH // 2, 400 + SCREEN_HEIGHT // 3,(178,34,34))
 while True:
     flag=1
     for event in pygame.event.get():
@@ -311,7 +315,7 @@ begin=0
 background=pygame.image.load("board.jpg")
 screen.blit(background,(0,0))
 ready="Press C/B/W to begin"
-win=['Draw','Black Win and','White Win and']
+win=['Draw','Black Win and','White Win and','User stop and game and']
 printf('arial.ttf',ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,(0,0,0))
 color=[(0,0,0),(0,0,0),(255,255,255)]
 while True:
@@ -399,3 +403,6 @@ while True:
                         begin=0
                         break
                     nowplayer=3-nowplayer
+            if event.type == pygame.KEYDOWN and event.key==pygame.K_q:
+                begin=0
+                printf('arial.ttf',win[3]+' '+ready,32,SCREEN_WIDTH // 2, 10 + SCREEN_HEIGHT // 4,(0,0,0))
